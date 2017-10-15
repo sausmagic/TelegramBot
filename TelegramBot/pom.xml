@@ -4,12 +4,17 @@
 	<groupId>TelegramBot</groupId>
 	<artifactId>TelegramBot</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
+	<properties>
+		<mongodb-driver.version>3.5.0</mongodb-driver.version>
+		<maven-compiler-plugin.version>3.6.1</maven-compiler-plugin.version>
+		<telegrambots.version>3.4</telegrambots.version>
+	</properties>
 	<build>
 		<sourceDirectory>src</sourceDirectory>
 		<plugins>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.6.1</version>
+				<version>${maven-compiler-plugin.version}</version>
 				<configuration>
 					<source>1.8</source>
 					<target>1.8</target>
@@ -21,7 +26,12 @@
 		<dependency>
 			<groupId>org.telegram</groupId>
 			<artifactId>telegrambots</artifactId>
-			<version>3.4</version>
+			<version>${telegrambots.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.mongodb</groupId>
+			<artifactId>mongodb-driver</artifactId>
+			<version>${mongodb-driver.version}</version>
 		</dependency>
 	</dependencies>
 </project>
