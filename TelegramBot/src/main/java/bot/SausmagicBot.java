@@ -16,52 +16,49 @@ public class SausmagicBot extends TelegramLongPollingBot {
 	private static final String TOKEN = "383745201:AAFkSRF1dLKyOOI3jPgfnCCgF0LYoUViEjs";
 
 	private static final BotLogger LOGGER = new BotLogger();
-	
+
 	private String messageToSent = "";
+	String message_text;
+
+	long chat_id;
 
 	@Override
 	public String getBotUsername() {
 		return "Sausmagicbot";
 	}
 
-	
 	@Override
 	public void onUpdateReceived(Update update) {
 		// We check if the update has a message and the message has text
-		
+
 		if (update.hasMessage() && update.getMessage().hasText()) {
 			// Set variables
-			String message_text = update.getMessage().getText();
+			message_text = update.getMessage().getText();
 
-			long chat_id = update.getMessage().getChatId();
+			chat_id = update.getMessage().getChatId();
 
-			if (message_text.contains("cacca")) {
+			if (message_text.equals("cacca")) {
 				messageToSent = "sei una merdaccia!";
-			} else {
-				if (message_text.equals("/pic")) {
-					LOGGER.info("invio", "photo");;
-					// User sent /pic
-					SendPhoto msg = new SendPhoto().setChatId(chat_id)
-							.setPhoto("AgADBAADpaoxG0kpCFMMfFFsXSotK_Xu-RkABOITPKXjLGAZAd4BAAEC").setCaption("Photo");
-					try {
-						sendPhoto(msg); // Call method to send the photo
-					} catch (TelegramApiException e) {
-						e.printStackTrace();
-					}
-				} else {
-					// Unknown command
-					SendMessage message = new SendMessage() // Create a message object object
-							.setChatId(chat_id).setText("Unknown command");
-					try {
-						execute(message); // Sending our message object to user
-					} catch (TelegramApiException e) {
-						e.printStackTrace();
-					}
+				SendMessage message = new SendMessage() // Create a message object object
+						.setChatId(chat_id).setText(messageToSent);
+				try {
+					execute(message); // Sending our message object to user
+				} catch (TelegramApiException e) {
+					e.printStackTrace();
 				}
-				{
-					messageToSent = message_text;
+			} else if (message_text.equals("pucceria")) {
+				LOGGER.info("invio", "photo");
+				;
+				// User sent /pic
+				SendPhoto msg = new SendPhoto().setChatId(chat_id)
+						.setPhoto("AgADBAADpaoxG0kpCFMMfFFsXSotK_Xu-RkABOITPKXjLGAZAd4BAAEC").setCaption("Photo");
+				try {
+					sendPhoto(msg); // Call method to send the photo
+				} catch (TelegramApiException e) {
+					e.printStackTrace();
 				}
-
+			}else {
+				messageToSent = message_text;
 				SendMessage message = new SendMessage() // Create a message object object
 						.setChatId(chat_id).setText(messageToSent);
 				try {
@@ -70,10 +67,11 @@ public class SausmagicBot extends TelegramLongPollingBot {
 					e.printStackTrace();
 				}
 			}
+
 		} else if (update.hasMessage() && update.getMessage().hasPhoto()) {
 			// Message contains photo
 			// Set variables
-			long chat_id = update.getMessage().getChatId();
+			chat_id = update.getMessage().getChatId();
 
 			// Array with photo objects with different sizes
 			// We will get the biggest photo from that array
@@ -96,8 +94,17 @@ public class SausmagicBot extends TelegramLongPollingBot {
 			} catch (TelegramApiException e) {
 				e.printStackTrace();
 			}
+		} else {
+			// Unknown command
+			messageToSent = message_text;
+			SendMessage message = new SendMessage() // Create a message object object
+					.setChatId(chat_id).setText(messageToSent);
+			try {
+				execute(message); // Sending our message object to user
+			} catch (TelegramApiException e) {
+				e.printStackTrace();
+			}
 		}
-
 	}
 
 	@Override
