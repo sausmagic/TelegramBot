@@ -5,10 +5,16 @@ import org.telegram.telegrambots.ApiContextInitializer;
 import org.telegram.telegrambots.TelegramBotsApi;
 import org.telegram.telegrambots.exceptions.TelegramApiException;
 
+import database.impl.DatabaseManager;
+
 
 public class Main {
 
 	public static void main(String[] args) {
+		
+		//inizializzazione MAnagerFactory per connessione a DB
+		new DatabaseManager();
+		
 		ApiContextInitializer.init();
 
 		// Instantiate Telegram Bots API
