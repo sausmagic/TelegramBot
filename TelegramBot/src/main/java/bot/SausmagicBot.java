@@ -7,20 +7,34 @@ import org.telegram.telegrambots.api.methods.send.SendMessage;
 import org.telegram.telegrambots.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.api.objects.PhotoSize;
 import org.telegram.telegrambots.api.objects.Update;
+import org.telegram.telegrambots.bots.DefaultBotOptions;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.exceptions.TelegramApiException;
 import org.telegram.telegrambots.logging.BotLogger;
 
+import yaml.configuration.ConfigYaml;
+import yaml.configuration.YamlManager;
+
 public class SausmagicBot extends TelegramLongPollingBot {
 
-	private static final String TOKEN = "383745201:AAFkSRF1dLKyOOI3jPgfnCCgF0LYoUViEjs";
+	// private static final String TOKEN =
+	// "383745201:AAFkSRF1dLKyOOI3jPgfnCCgF0LYoUViEjs";
 
 	private static final BotLogger LOGGER = new BotLogger();
 
 	private String messageToSent = "";
 	String message_text;
-
 	long chat_id;
+	private ConfigYaml configYaml;
+
+	public SausmagicBot() {
+		super();
+		configYaml = new YamlManager().getConfigYaml();
+	}
+
+	public SausmagicBot(DefaultBotOptions options) {
+		super(options);
+	}
 
 	@Override
 	public String getBotUsername() {
@@ -57,7 +71,19 @@ public class SausmagicBot extends TelegramLongPollingBot {
 				} catch (TelegramApiException e) {
 					e.printStackTrace();
 				}
-			}else {
+
+			} else if (message_text.equals("bella")) {
+				LOGGER.info("invio", "photo");
+				;
+				// User sent /pic
+				SendPhoto msg = new SendPhoto().setChatId(chat_id)
+						.setPhoto("https://i0.wp.com/www.roadtvitalia.it/wp-content/uploads/2015/09/foto-belle-donne-sportive-10.jpg?zoom=2&w=1136&h=852&crop").setCaption("Malament....");
+				try {
+					sendPhoto(msg); // Call method to send the photo
+				} catch (TelegramApiException e) {
+					e.printStackTrace();
+				}
+			} else {
 				messageToSent = message_text;
 				SendMessage message = new SendMessage() // Create a message object object
 						.setChatId(chat_id).setText(messageToSent);
@@ -109,7 +135,7 @@ public class SausmagicBot extends TelegramLongPollingBot {
 
 	@Override
 	public String getBotToken() {
-		return TOKEN;
+		return configYaml.getTelegramProperties().getToken();
 	}
 
 }

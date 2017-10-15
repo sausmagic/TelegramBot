@@ -27,11 +27,24 @@ public class YamlManager {
 		return configurationProperties;
 	}
 	
+	@SuppressWarnings("unused")
 	private File getFileResourceProperties(final String filename) {
 		// Get file from resources folder
 		ClassLoader classLoader = getClass().getClassLoader();
 		File file = new File(classLoader.getResource(filename).getFile());
 		return file;
+	}
+	
+	/**
+	 * Recupera le configurazioni da properties.
+	 * Se già istanziato l'oggetto da altra entità riutiliziamo lo stesso altrimento istanziamo un nuovo oggetto con le proprietà
+	 * @return
+	 */
+	public ConfigYaml getConfigYaml() {
+		if(configurationProperties!=null) {
+			return configurationProperties;
+		}
+		return configurationProperties = startConfiguration();
 	}
 
 }
