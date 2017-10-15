@@ -7,3 +7,10 @@ connection:
 users:
     root: sausmagic
     admin: sausmagic85
+    
+#Detail of telegram api
+telegramProperties:
+    url: https://api.telegram.org/botTOKEN/METHOD_NAME
+    token: 383745201:AAFkSRF1dLKyOOI3jPgfnCCgF0LYoUViEjs
+    
+         
