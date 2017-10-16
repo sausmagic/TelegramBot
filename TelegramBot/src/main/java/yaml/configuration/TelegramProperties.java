@@ -20,5 +20,12 @@ public class TelegramProperties {
 	public void setToken(String token) {
 		this.token = token;
 	}
+
+	@Override
+	public String toString() {
+		return "TelegramProperties [url=" + url + ", token=" + token + "]";
+	}
+	
+	
 	
 }

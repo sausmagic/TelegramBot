@@ -94,7 +94,9 @@ public class SausmagicBot extends TelegramLongPollingBot {
 				}
 			}
 
-		} else if (update.hasMessage() && update.getMessage().hasPhoto()) {
+		}
+		//Qui carichiamo l'immagine inviata sul server di telegram che ci fornisce l'id associato all'immagine da utilizzare per recuperarla
+		else if (update.hasMessage() && update.getMessage().hasPhoto()) {
 			// Message contains photo
 			// Set variables
 			chat_id = update.getMessage().getChatId();
@@ -121,7 +123,7 @@ public class SausmagicBot extends TelegramLongPollingBot {
 				e.printStackTrace();
 			}
 		} else {
-			// Unknown command
+			// se nessuno degli altri andiamo in echo message
 			messageToSent = message_text;
 			SendMessage message = new SendMessage() // Create a message object object
 					.setChatId(chat_id).setText(messageToSent);

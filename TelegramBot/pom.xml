@@ -13,6 +13,7 @@
 		<jackson-databind.version>2.9.2</jackson-databind.version>
 		<jackson-dataformat-yaml.version>2.9.2</jackson-dataformat-yaml.version>
 		<jackson-annotations.version>2.9.2</jackson-annotations.version>
+		<maven-assembly-plugin.version>3.1.0</maven-assembly-plugin.version>
 	</properties>
 	<build>
 		<sourceDirectory>src</sourceDirectory>
@@ -24,6 +25,32 @@
 					<source>1.8</source>
 					<target>1.8</target>
 				</configuration>
+			</plugin>
+			<!-- Umberto: build jar con tutte le librerie necessarie per girare autonomamente -->
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<groupId>org.apache.maven.plugins</groupId>
+				<version>${maven-assembly-plugin.version}</version>
+				<executions>
+					<execution>
+						<id>make-executable-jar-with-dependencies</id>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+						<configuration>
+							<archive>
+								<manifest>
+									<addClasspath>true</addClasspath>
+									<mainClass>bot.Main</mainClass>
+								</manifest>
+							</archive>
+							<descriptorRefs>
+								<descriptorRef>jar-with-dependencies</descriptorRef>
+							</descriptorRefs>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
