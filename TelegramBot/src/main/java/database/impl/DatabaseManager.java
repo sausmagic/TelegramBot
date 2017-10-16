@@ -29,7 +29,7 @@ public class DatabaseManager implements IDatabase {
 
 	public void init() {
 		System.out.println("test inizializzazione connessione");
-//		System.out.println("Configurazioni lette e messe in memoria -->"+yamlManager);
+		System.out.println("Configurazioni lette e messe in memoria -->"+configYaml);
 		String URI = configYaml.getConnection().getUrl();
 		String dbname = configYaml.getConnection().getDBName();
 		database = getConnection(URI,dbname);
