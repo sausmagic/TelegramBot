@@ -7,6 +7,7 @@ import java.util.Map;
 public class ConfigYaml {
 
 	private Connection[] connection;
+	private Connection thisConnection;
 	private Map< String, String > users;
 	private TelegramProperties telegramProperties;
 	private List<String> env;
@@ -14,11 +15,11 @@ public class ConfigYaml {
 	public Connection getConnection(String environment) {
 		for (int i = 0; i < connection.length; i++) {
 			if(connection[i].getEnv().equals(environment)) {
-				return connection[i];
+				return thisConnection=connection[i];
 			}
 		}
 		//significa che non è stata definita una variabile di ambiente e prendiamo quella di default
-		return Arrays.asList(connection).get(0);
+		return thisConnection=Arrays.asList(connection).get(0);
 	}
 	public void setConnection(Connection[] connection) {
 		this.connection = connection;
@@ -44,7 +45,7 @@ public class ConfigYaml {
 	
 	@Override
 	public String toString() {
-		return "ConfigYaml [connection=" + connection + ", users=" + users + ", telegramProperties="
+		return "ConfigYaml [connection=" + thisConnection + ", users=" + users + ", telegramProperties="
 				+ telegramProperties + ", env=" + env + "]";
 	}
 	
