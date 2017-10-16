@@ -18,6 +18,7 @@ public class ServiceOperations extends SausmagicBot {
 				chat_id = update.getMessage().getChatId();
 				user = update.getMessage().getFrom();
 				db_op.check(user.getFirstName(), user.getLastName(), user.getId(), user.getUserName());
+				db_op.getcollections();
 				super.onUpdateReceived(update);
 			} else {
 				// riporto al comportamento definito nel bot base se il message è diverso da
