@@ -1,9 +1,16 @@
 package yaml.configuration;
 
-public final class Connection {
+import java.io.Serializable;
 
+public final class Connection implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1846413523633781532L;
 	private String url;
 	private String dbname;
+	private String env;
 
 	public String getUrl() {
 		return url;
@@ -12,18 +19,28 @@ public final class Connection {
 	public void setUrl(String url) {
 		this.url = url;
 	}
-
-	public String getDBName() {
+	
+	public String getDbname() {
 		return dbname;
 	}
 
-	public void setDBName(String dbname) {
+	public void setDbname(String dbname) {
 		this.dbname = dbname;
+	}
+
+	public String getEnv() {
+		return env;
+	}
+
+	public void setEnv(String env) {
+		this.env = env;
 	}
 
 	@Override
 	public String toString() {
-		return String.format("'%s' with name %s", getUrl(), getDBName());
+		return "Connection [url=" + url + ", dbname=" + dbname + ", env=" + env + "]";
 	}
+
+	
 
 }
