@@ -8,10 +8,10 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 
 public class YamlManager {
 
-	private final String FILENAME = "/properties/properties.yaml";
-	private ConfigYaml configurationProperties;
+	private final static String FILENAME = "/properties/properties.yaml";
+	private static ConfigYaml configurationProperties;
 
-	public ConfigYaml startConfiguration() {
+	public static ConfigYaml startConfiguration() {
 		System.out.println("startConfiguration.......START ");
 		ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
 		try {
@@ -43,8 +43,9 @@ public class YamlManager {
 	 * 
 	 * @return
 	 */
-	public ConfigYaml getConfigYaml() {
+	public static ConfigYaml getConfigYaml() {
 		if (configurationProperties != null) {
+			System.out.println("CONFIGURAZIONI GIA' PRESENTI IN MEMORIA....usiamo quelle già caricate");
 			return configurationProperties;
 		}
 		return configurationProperties = startConfiguration();

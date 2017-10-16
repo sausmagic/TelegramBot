@@ -16,13 +16,14 @@ public class DatabaseManager implements IDatabase {
 
 	private MongoDatabase database;
 	private MongoClient clientConnectionMongoDB;
-	private YamlManager yamlManager;
+//	private YamlManager yamlManager;
 	private ConfigYaml configYaml;
 	
 	public DatabaseManager() {
 		super();
-		yamlManager = new YamlManager();
-		configYaml = yamlManager.startConfiguration();
+//		yamlManager = new YamlManager();
+//		configYaml = yamlManager.startConfiguration();
+		configYaml = YamlManager.getConfigYaml();
 		init();
 		
 	}
