@@ -1,7 +1,15 @@
+#Environment di produzione default se non definita diversamente
+env:
+  - prod
+
 #Detail connection to DB
 connection:
-    url: mongodb://sausmagic:sausmagic85@cluster0-shard-00-00-nxuyh.mongodb.net:27017,cluster0-shard-00-01-nxuyh.mongodb.net:27017,cluster0-shard-00-02-nxuyh.mongodb.net:27017/test?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin
-    dbname: test
+    - url: mongodb://sausmagic:sausmagic85@cluster0-shard-00-00-nxuyh.mongodb.net:27017,cluster0-shard-00-01-nxuyh.mongodb.net:27017,cluster0-shard-00-02-nxuyh.mongodb.net:27017/test?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin
+      dbname: test
+      env: prod
+    - url: mongodb://sausmagic:sausmagic85@cluster0-shard-00-00-nxuyh.mongodb.net:27017,cluster0-shard-00-01-nxuyh.mongodb.net:27017,cluster0-shard-00-02-nxuyh.mongodb.net:27017/test?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin
+      dbname: test
+      env: local
 
 # Users
 users:

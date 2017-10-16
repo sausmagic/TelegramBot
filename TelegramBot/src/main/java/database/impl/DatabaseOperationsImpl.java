@@ -10,6 +10,10 @@ import database.impl.DatabaseManager;
 
 public class DatabaseOperationsImpl extends DatabaseManager implements IDatabaseOperations { 
 	
+	public DatabaseOperationsImpl(String environment) {
+		super(environment);
+	}
+
 	@Override
 	public String check(String first_name, String last_name, int user_id, String username) {
 		try {

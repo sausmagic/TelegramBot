@@ -16,13 +16,12 @@ public class DatabaseManager implements IDatabase {
 
 	private MongoDatabase database;
 	private MongoClient clientConnectionMongoDB;
-	private YamlManager yamlManager;
 	private ConfigYaml configYaml;
+	private String environment;
 	
-	public DatabaseManager() {
-		super();
-		yamlManager = new YamlManager();
-		configYaml = yamlManager.startConfiguration();
+	public DatabaseManager(String environment) {
+		configYaml = YamlManager.getConfigYaml();
+		this.environment = environment;
 		init();
 		
 	}
@@ -30,8 +29,8 @@ public class DatabaseManager implements IDatabase {
 	public void init() {
 		System.out.println("test inizializzazione connessione");
 		System.out.println("Configurazioni lette e messe in memoria -->"+configYaml);
-		String URI = configYaml.getConnection().getUrl();
-		String dbname = configYaml.getConnection().getDBName();
+		String URI = configYaml.getConnection(environment).getUrl();
+		String dbname = configYaml.getConnection(environment).getDbname();
 		database = getConnection(URI,dbname);
 		if(database!=null) {
 			System.out.println("Connession al DB MongoDB avvennuta con successo!!!");
@@ -46,10 +45,25 @@ public class DatabaseManager implements IDatabase {
 		return clientConnectionMongoDB;
 	}
 
+	/**
+	 * Umberto: otteniamo la connessione con il DB.
+	 * Verifichiamo che la connessione sia effettivamente avvenuta con successo verso il cluster
+	 */
 	@Override
 	public MongoDatabase getConnection(String connectionURI, String db_name) {
 		MongoClientURI connectionString = new MongoClientURI(connectionURI);
         clientConnectionMongoDB = new MongoClient(connectionString);
+        
+        if(clientConnectionMongoDB.getAddress()!=null) {
+        	System.out.println("Connessione eseguita con SUCCESSO al DATABASE");
+        }else {
+        	System.out.println("Impossibile stabilire una connessione SEE Exception Stack Trace");
+        }
+        if(clientConnectionMongoDB.isLocked()) {
+        	System.out.println("Connessione al DB LIBERA!");
+        }else {
+        	System.out.println("Connessione al DB LOCCATA!");
+        }
 		MongoDatabase database = clientConnectionMongoDB.getDatabase(db_name);
         return database;
 	}

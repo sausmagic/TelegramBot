@@ -13,7 +13,7 @@ public class Main {
 	public static void main(String[] args) {
 		
 		//inizializzazione MAnagerFactory per connessione a DB
-		new DatabaseManager();
+		new DatabaseManager(System.getenv("env"));
 		
 		ApiContextInitializer.init();
 

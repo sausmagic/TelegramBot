@@ -29,7 +29,7 @@ public class SausmagicBot extends TelegramLongPollingBot {
 
 	public SausmagicBot() {
 		super();
-		configYaml = new YamlManager().getConfigYaml();
+		configYaml = YamlManager.getConfigYaml();
 	}
 
 	public SausmagicBot(DefaultBotOptions options) {
