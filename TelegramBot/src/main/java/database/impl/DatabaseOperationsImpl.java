@@ -1,7 +1,10 @@
 package database.impl;
 
+import java.util.Iterator;
+
 import org.bson.Document;
 
+import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.MongoIterable;
@@ -60,12 +63,23 @@ public class DatabaseOperationsImpl extends DatabaseManager implements IDatabase
 			MongoIterable<String> collections = database.listCollectionNames();
 
 			for (String collecName : collections) {
-				System.out.println(collecName);
+				System.out.println("Collection preenti a DB: "+collecName);
 			}
 
 		} catch (Exception e) {
 			System.err.println("ERRORE:" + e);
 		}
+	}
+
+	@Override
+	public void getcollectionData(String collectionName) {
+		MongoDatabase database = getOpenDatabaseConnection();
+		MongoCollection<Document> documents = database.getCollection(collectionName);
+		FindIterable<Document> iterableDocuments=documents.find();
+		for (Document document : iterableDocuments) {
+			System.out.println(document.toJson());
+		}
+		
 	}
 
 }

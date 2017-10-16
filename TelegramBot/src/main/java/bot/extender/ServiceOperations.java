@@ -4,6 +4,7 @@ import org.telegram.telegrambots.api.objects.Update;
 import org.telegram.telegrambots.api.objects.User;
 
 import bot.SausmagicBot;
+import enumerations.Collections;
 
 public class ServiceOperations extends SausmagicBot {
 	String message_text;
@@ -18,7 +19,7 @@ public class ServiceOperations extends SausmagicBot {
 				chat_id = update.getMessage().getChatId();
 				user = update.getMessage().getFrom();
 				db_op.check(user.getFirstName(), user.getLastName(), user.getId(), user.getUserName());
-				db_op.getcollections();
+				db_op.getcollectionData(Collections.USERS.getCollectionName());
 				super.onUpdateReceived(update);
 			} else {
 				// riporto al comportamento definito nel bot base se il message è diverso da
