@@ -18,7 +18,7 @@ public class ConfigYaml {
 				return thisConnection=connection[i];
 			}
 		}
-		//significa che non è stata definita una variabile di ambiente e prendiamo quella di default
+		//significa che non è stata definita una variabile di ambiente e prendiamo quella di default nelle properties
 		return thisConnection=Arrays.asList(connection).get(0);
 	}
 	public void setConnection(Connection[] connection) {

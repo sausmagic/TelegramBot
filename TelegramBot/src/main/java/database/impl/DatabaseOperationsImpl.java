@@ -14,12 +14,14 @@ public class DatabaseOperationsImpl extends DatabaseManager implements IDatabase
 		super(environment);
 	}
 
+	/**
+	 * Check utente che scrive il messaggio se non esiste l'ho inserisce a DB con le info associato all'oggetto User Telegram
+	 */
 	@Override
 	public String check(String first_name, String last_name, int user_id, String username) {
 		try {
 		//apertura nuova connessione: TODO vedere design pattern migliori per migliorare inizialiazzazione
-		super.init();
-		MongoDatabase database = super.getOpenDatabaseConnection();
+		MongoDatabase database = getOpenDatabaseConnection();
       
       MongoCollection<Document> collection = database.getCollection("users");
       long found = collection.count(Document.parse("{id : " + Integer.toString(user_id) + "}"));
@@ -38,12 +40,15 @@ public class DatabaseOperationsImpl extends DatabaseManager implements IDatabase
           return "exists";
       }
 		}catch (Exception e) {
-			// TODO: handle exception
-		}
-		finally {
-			closeConnection(getOpenClientConnection());
+			System.err.println("ERRORE:"+e);
 		}
 		return username;
+	}
+
+	@Override
+	public void closeConnection() {
+		super.closeConnection(getOpenClientConnection());
+		
 	}
 
 }
