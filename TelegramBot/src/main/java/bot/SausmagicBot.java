@@ -12,13 +12,20 @@ import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.exceptions.TelegramApiException;
 import org.telegram.telegrambots.logging.BotLogger;
 
+import database.IDatabaseOperations;
+import database.impl.DatabaseOperationsImpl;
 import yaml.configuration.ConfigYaml;
 import yaml.configuration.YamlManager;
 
+/**
+ * Classe base del boot
+ * nel caso creare delle classi più rqaffinate ed estendere questa che estende la classe API di telegram per 
+ * il polling sul boot in hadler su cosa accade nella chat.
+ * 
+ * @author u.palo
+ *
+ */
 public class SausmagicBot extends TelegramLongPollingBot {
-
-	// private static final String TOKEN =
-	// "383745201:AAFkSRF1dLKyOOI3jPgfnCCgF0LYoUViEjs";
 
 	private static final BotLogger LOGGER = new BotLogger();
 
@@ -26,10 +33,14 @@ public class SausmagicBot extends TelegramLongPollingBot {
 	String message_text;
 	long chat_id;
 	private ConfigYaml configYaml;
+	public IDatabaseOperations db_op;
 
 	public SausmagicBot() {
 		super();
+		//inizializzazione configurazione 
 		configYaml = YamlManager.getConfigYaml();
+		//inizializzazione MAnagerFactory per connessione a DB
+		db_op=new DatabaseOperationsImpl(System.getenv("env"));
 	}
 
 	public SausmagicBot(DefaultBotOptions options) {
