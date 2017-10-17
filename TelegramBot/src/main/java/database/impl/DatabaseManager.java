@@ -1,5 +1,8 @@
 package database.impl;
 
+import org.mongodb.morphia.Datastore;
+import org.mongodb.morphia.Morphia;
+
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
 import com.mongodb.client.MongoDatabase;
@@ -10,15 +13,33 @@ import yaml.configuration.YamlManager;
 
 public class DatabaseManager implements IDatabase {
 
-	private MongoDatabase database;
+	protected MongoDatabase database;
 	private MongoClient clientConnectionMongoDB;
 	private ConfigYaml configYaml;
 	private String environment;
+	private Datastore datastore;
 
 	public DatabaseManager(String environment) {
 		configYaml = YamlManager.getConfigYaml();
 		this.environment = environment;
 //		init();
+	}
+
+	private Datastore getDatastoreIstance(String dbname) {
+		final Morphia morphia = new Morphia();
+
+		// tell Morphia where to find your classes
+		// can be called multiple times with different packages or classes
+		morphia.mapPackage("org.mongodb.morphia.example");
+
+		// create the Datastore connecting to the default port on the local host
+		datastore = morphia.createDatastore(getOpenClientConnection(), dbname);
+		datastore.ensureIndexes();
+		return datastore;
+	}
+	
+	public Datastore getDataStore() {
+		return datastore;
 	}
 
 	public void init() {
@@ -76,6 +97,7 @@ public class DatabaseManager implements IDatabase {
 				System.out.println("Connessione al DB LOCCATA!");
 			}
 			database = clientConnectionMongoDB.getDatabase(db_name);
+			datastore = getDatastoreIstance(db_name);
 		} else {
 			System.out.println("Connessione DB attiva recupero quella aperta....");
 			database = getOpenDatabaseConnection();

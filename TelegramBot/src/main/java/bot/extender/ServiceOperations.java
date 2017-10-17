@@ -25,8 +25,13 @@ public class ServiceOperations extends SausmagicBot {
 				message_text = update.getMessage().getText();
 				chat_id = update.getMessage().getChatId();
 				user = update.getMessage().getFrom();
-				db_op.check(user.getFirstName(), user.getLastName(), user.getId(), user.getUserName());
+//				db_op.check(user.getFirstName(), user.getLastName(), user.getId(), user.getUserName());
+				db_op.checkUtente(user, chat_id);
 				db_op.getcollectionData(Collections.USERS.getCollectionName());
+				
+				db_op.getcollectionData(Collections.UTENTI.getCollectionName());
+				// riporto al comportamento definito nel bot base se il message è diverso da
+				// testo o non ha il comportamento che vogliamo
 				super.onUpdateReceived(update);
 			} else {
 				// riporto al comportamento definito nel bot base se il message è diverso da
@@ -34,7 +39,7 @@ public class ServiceOperations extends SausmagicBot {
 				super.onUpdateReceived(update);
 			}
 		} catch (Exception e) {
-			// TODO: handle exception
+			System.err.println("Eccezione: "+e);
 		} finally {
 //			System.out.println("Chiudo la connessione con il DB.");
 //			db_op.closeConnection();

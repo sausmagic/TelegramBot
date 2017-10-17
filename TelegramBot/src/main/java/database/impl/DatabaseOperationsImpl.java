@@ -1,20 +1,26 @@
 package database.impl;
 
-import java.util.Iterator;
-
 import org.bson.Document;
-
+import org.bson.codecs.configuration.CodecRegistries;
+import org.bson.codecs.configuration.CodecRegistry;
+import org.bson.codecs.pojo.PojoCodecProvider;
+import org.mongodb.morphia.Datastore;
+import org.telegram.telegrambots.api.objects.User;
+import com.mongodb.MongoClient;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.MongoIterable;
 
+import beans.Utente;
 import database.IDatabaseOperations;
 import database.impl.DatabaseManager;
 import enumerations.Collections;
 
 public class DatabaseOperationsImpl extends DatabaseManager implements IDatabaseOperations {
 
+	private Datastore datastore;
+	
 	public DatabaseOperationsImpl(String environment) {
 		super(environment);
 	}
@@ -38,11 +44,10 @@ public class DatabaseOperationsImpl extends DatabaseManager implements IDatabase
 				collectionUsers.insertOne(doc);
 
 				System.out.println("User not exists in database. Written.");
-				
+
 			} else {
 				System.out.println("User exists in database.");
 
-				
 			}
 		} catch (Exception e) {
 			System.err.println("ERRORE:" + e);
@@ -63,7 +68,7 @@ public class DatabaseOperationsImpl extends DatabaseManager implements IDatabase
 			MongoIterable<String> collections = database.listCollectionNames();
 
 			for (String collecName : collections) {
-				System.out.println("Collection preenti a DB: "+collecName);
+				System.out.println("Collection preenti a DB: " + collecName);
 			}
 
 		} catch (Exception e) {
@@ -75,23 +80,83 @@ public class DatabaseOperationsImpl extends DatabaseManager implements IDatabase
 	public void getcollectionData(String collectionName) {
 		MongoDatabase database = getOpenDatabaseConnection();
 		MongoCollection<Document> documents = database.getCollection(collectionName);
-		FindIterable<Document> iterableDocuments=documents.find();
+		FindIterable<Document> iterableDocuments = documents.find();
 		for (Document document : iterableDocuments) {
-			System.out.println(document.toJson());
+			System.out.println(collectionName+"-->"+document.toJson());
 		}
-		
+
 	}
 
 	@Override
 	public void saveChats(Object objectPojo, String collection) {
 		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
-	public void addPojoToCollection(Object objectPojo, String collection) {
-		// TODO Auto-generated method stub
+	public void addPojoToCollection(Object utente, String collection) {
+
+	}
+
+	private MongoCollection<Utente> getCollection(MongoDatabase database, String collection) {
+		return database.getCollection(collection, Utente.class);
+	}
+
+	@Override
+	public void checkUtente(User utente, long chatId) {
+		// apertura nuova connessione: TODO vedere design pattern migliori per
+		// migliorare inizialiazzazione
+		MongoDatabase database = getOpenDatabaseConnection();
+		datastore = getDataStore();
 		
+		Utente utenteC = transform(utente, chatId);
+		int searchUser = datastore.createQuery(Utente.class).field("id").equalIgnoreCase(utente.getId()).asList().size();
+		if(searchUser<=0) {
+			datastore.save(utenteC);
+			System.out.println("Salvo utente a DB");
+		}else {
+			System.out.println("Utente presente nel database");
+		}
+/**
+ * 
+ * Umberto:
+ * difficolta nell'usare nativamente la scrittura dei pojo custom si utilizza per ora MORPHIA equaivalente hibernate driver ORM
+ * 
+		//per utilizzare i pojo con MongoDb è necessario definire il Custom CodecRegistry
+				CodecRegistry pojoCodecRegistry = CodecRegistries.fromRegistries(MongoClient.getDefaultCodecRegistry(),
+						CodecRegistries.fromProviders(PojoCodecProvider.builder().automatic(true).build()));
+				database = database.withCodecRegistry(pojoCodecRegistry);
+//		MongoCollection<Utente> collectionUtente = getCollection(database, Collections.UTENTI.getCollectionName());
+		
+//		Block<Utente> printBlock = new Block<Utente>() {
+//			@Override
+//			public void apply(final Utente person) {
+//				if (person.getId() == utenteC.getId()) {
+//					System.out.println("Aggiungo Utente a DB: "+utenteC);
+//					collectionUtente.insertOne(utenteC);
+//				} else {
+//					System.out.println("Utente esistente a DB: "+utenteC);
+//				}
+//			}
+//		};
+//		collectionUtente.find().forEach(printBlock);
+ * 
+ */
+	}
+
+	/**
+	 * trasformer interno bean utente custom 
+	 * @param utente
+	 * @param chatId
+	 * @return
+	 */
+	private Utente transform(User utente, long chatId) {
+		Utente utenteCustom = new Utente();
+		utenteCustom.setChatId(chatId);
+		utenteCustom.setId(utente.getId());
+		utenteCustom.setCognome(utente.getLastName());
+		utenteCustom.setName(utente.getFirstName());
+		utenteCustom.setUsername(utente.getUserName());
+		return utenteCustom;
 	}
 
 }
