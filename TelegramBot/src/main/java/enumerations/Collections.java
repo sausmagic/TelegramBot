@@ -2,7 +2,8 @@ package enumerations;
 
 public enum Collections {
 
-	USERS("users");
+	USERS("users"),
+	UTENTI("utenti");
 	
 	private String CollectionName;
 
