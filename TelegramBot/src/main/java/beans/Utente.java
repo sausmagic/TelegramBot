@@ -9,21 +9,21 @@ import org.mongodb.morphia.annotations.Indexes;
 
 @Entity("utenti")
 @Indexes(
-	    @Index(fields = @Field("id"))
+	    @Index(fields = {@Field("id"), @Field("username")})
 	)
 public class Utente {
 
 	@Id
-	private long id;
+	private Integer id;
 	private String name;
 	private String cognome;
-	private long chatId;
+	private Long chatId;
 	private String username;
 	
-	public long getId() {
+	public Integer getId() {
 		return id;
 	}
-	public void setId(long id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 	public String getName() {
@@ -38,10 +38,10 @@ public class Utente {
 	public void setCognome(String cognome) {
 		this.cognome = cognome;
 	}
-	public long getChatId() {
+	public Long getChatId() {
 		return chatId;
 	}
-	public void setChatId(long chatId) {
+	public void setChatId(Long chatId) {
 		this.chatId = chatId;
 	}
 	public String getUsername() {
