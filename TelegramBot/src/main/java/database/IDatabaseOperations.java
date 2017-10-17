@@ -25,7 +25,7 @@ public interface IDatabaseOperations {
 	 */
 	void check(String first_name, String last_name, int user_id, String username);
 	
-	void checkUtente(User utente, long chat_id);
+	void checkUtente(User utente, Long chat_id);
 	/**
 	 * Chiude la connessione al DB
 	 * NOTA BENE: alla chiusura della connessione e nuova apertura si hanno problemi sul pool di connessione 

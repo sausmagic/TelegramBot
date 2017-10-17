@@ -102,14 +102,14 @@ public class DatabaseOperationsImpl extends DatabaseManager implements IDatabase
 	}
 
 	@Override
-	public void checkUtente(User utente, long chatId) {
+	public void checkUtente(User utente, Long chatId) {
 		// apertura nuova connessione: TODO vedere design pattern migliori per
 		// migliorare inizialiazzazione
-		MongoDatabase database = getOpenDatabaseConnection();
+		getOpenDatabaseConnection();
 		datastore = getDataStore();
 		
 		Utente utenteC = transform(utente, chatId);
-		int searchUser = datastore.createQuery(Utente.class).field("id").equalIgnoreCase(utente.getId()).asList().size();
+		int searchUser = datastore.createQuery(Utente.class).field("username").equalIgnoreCase(utente.getUserName()).asList().size();
 		if(searchUser<=0) {
 			datastore.save(utenteC);
 			System.out.println("Salvo utente a DB");
@@ -149,7 +149,7 @@ public class DatabaseOperationsImpl extends DatabaseManager implements IDatabase
 	 * @param chatId
 	 * @return
 	 */
-	private Utente transform(User utente, long chatId) {
+	private Utente transform(User utente, Long chatId) {
 		Utente utenteCustom = new Utente();
 		utenteCustom.setChatId(chatId);
 		utenteCustom.setId(utente.getId());
