@@ -11,6 +11,7 @@ import com.mongodb.client.MongoIterable;
 
 import database.IDatabaseOperations;
 import database.impl.DatabaseManager;
+import enumerations.Collections;
 
 public class DatabaseOperationsImpl extends DatabaseManager implements IDatabaseOperations {
 
@@ -23,30 +24,29 @@ public class DatabaseOperationsImpl extends DatabaseManager implements IDatabase
 	 * info associato all'oggetto User Telegram
 	 */
 	@Override
-	public String check(String first_name, String last_name, int user_id, String username) {
+	public void check(String first_name, String last_name, int user_id, String username) {
 		try {
 			// apertura nuova connessione: TODO vedere design pattern migliori per
 			// migliorare inizialiazzazione
 			MongoDatabase database = getOpenDatabaseConnection();
 
-			MongoCollection<Document> collection = database.getCollection("users");
-			long found = collection.count(Document.parse("{id : " + Integer.toString(user_id) + "}"));
+			MongoCollection<Document> collectionUsers = database.getCollection(Collections.USERS.getCollectionName());
+			long found = collectionUsers.count(Document.parse("{id : " + Integer.toString(user_id) + "}"));
 			if (found == 0) {
 				Document doc = new Document("first_name", first_name).append("last_name", last_name)
 						.append("id", user_id).append("username", username);
-				collection.insertOne(doc);
+				collectionUsers.insertOne(doc);
 
 				System.out.println("User not exists in database. Written.");
-				return "no_exists";
+				
 			} else {
 				System.out.println("User exists in database.");
 
-				return "exists";
+				
 			}
 		} catch (Exception e) {
 			System.err.println("ERRORE:" + e);
 		}
-		return username;
 	}
 
 	@Override
@@ -79,6 +79,18 @@ public class DatabaseOperationsImpl extends DatabaseManager implements IDatabase
 		for (Document document : iterableDocuments) {
 			System.out.println(document.toJson());
 		}
+		
+	}
+
+	@Override
+	public void saveChats(Object objectPojo, String collection) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void addPojoToCollection(Object objectPojo, String collection) {
+		// TODO Auto-generated method stub
 		
 	}
 

@@ -6,6 +6,13 @@ import org.telegram.telegrambots.api.objects.User;
 import bot.SausmagicBot;
 import enumerations.Collections;
 
+/**
+ * Questa classe fa da Handler spoof di quello che accade nella chat.
+ * Puo provvedere a intercettare messaggi nella chat e storarli a DB o manipolarli in BE.
+ * alla fine verso la chat il comportamento sarà quello di default definito nel Bot padre esteso
+ * @author u.palo
+ *
+ */
 public class ServiceOperations extends SausmagicBot {
 	String message_text;
 	User user;
