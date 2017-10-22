@@ -15,12 +15,13 @@ import utils.MD5Generator;
 
 public class LoadImages extends DatabaseOperationsImpl{
 
-	private static Datastore datastore;
+//	private static Datastore datastore;
 	
 	public LoadImages(String environment) {
 		super(environment);
-		getOpenDatabaseConnection();
-		datastore = getDataStore();
+		}
+	public LoadImages() {
+		super("");
 		}
 
 	private static Image image;
@@ -40,15 +41,15 @@ public class LoadImages extends DatabaseOperationsImpl{
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				if (datastore.createQuery(Image.class).field("id") != null) {
-					int searchImage = datastore.createQuery(Image.class).field("id").equalIgnoreCase(id)
+				if (getDataStore().createQuery(Image.class).field("id") != null) {
+					int searchImage = getDataStore().createQuery(Image.class).field("id").equalIgnoreCase(id)
 							.asList().size();
 					if (searchImage <= 0) {
 						image.setCategory(Group.Category.GIRL.getCategoryName());
 						image.setGroup(Group.SEXY.getGroupName());
 						image.setUrl(ImageUrl);
 						image.setId(id);
-						datastore.save(image);
+						getDataStore().save(image);
 						System.out.println("Salvo imaggine a DB");
 					} else {
 						System.out.println("Immagine presente nel database");
@@ -66,7 +67,7 @@ public class LoadImages extends DatabaseOperationsImpl{
 	}
 
 	public List<Image> getAllImages(String categoryToInsert) {
-		return datastore.find(Image.class).asList();
+		return getDataStore().find(Image.class).asList();
 
 	}
 }

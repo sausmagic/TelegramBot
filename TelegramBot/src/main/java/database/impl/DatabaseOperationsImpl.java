@@ -29,6 +29,8 @@ public class DatabaseOperationsImpl extends DatabaseManager implements IDatabase
 	
 	public DatabaseOperationsImpl(String environment) {
 		super(environment);
+		getOpenDatabaseConnection();
+		datastore = getDataStore();
 	}
 
 	/**
@@ -115,7 +117,7 @@ public class DatabaseOperationsImpl extends DatabaseManager implements IDatabase
 		datastore = getDataStore();
 		
 		Utente utenteC = transform(utente, chatId);
-		int searchUser = datastore.createQuery(Utente.class).field("username").equalIgnoreCase(utente.getUserName()).asList().size();
+		int searchUser = datastore.createQuery(Utente.class).field("id").equalIgnoreCase(utente.getUserName()).asList().size();
 		if(searchUser<=0) {
 			datastore.save(utenteC);
 			System.out.println("Salvo utente a DB");
