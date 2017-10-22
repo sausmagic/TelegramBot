@@ -39,6 +39,7 @@ public class ServiceOperations extends SausmagicBot {
 				super.onUpdateReceived(update);
 			}
 		} catch (Exception e) {
+			e.printStackTrace();
 			System.err.println("Eccezione: "+e);
 		} finally {
 //			System.out.println("Chiudo la connessione con il DB.");
