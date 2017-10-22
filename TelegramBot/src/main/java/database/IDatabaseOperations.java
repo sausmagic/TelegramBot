@@ -1,5 +1,7 @@
 package database;
 
+import java.util.List;
+
 import org.telegram.telegrambots.api.objects.User;
 
 
@@ -61,5 +63,7 @@ public interface IDatabaseOperations {
 	 * @param collection
 	 */
 	  void saveChats(Object objectPojo, String collection);
+	  
+	  void addListUrlImages(List<String> urlImages, String collection);
 	
 }
