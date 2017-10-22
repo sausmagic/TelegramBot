@@ -1,5 +1,7 @@
 package database.impl;
 
+import java.util.List;
+
 import org.bson.Document;
 import org.bson.codecs.configuration.CodecRegistries;
 import org.bson.codecs.configuration.CodecRegistry;
@@ -20,6 +22,10 @@ import enumerations.Collections;
 public class DatabaseOperationsImpl extends DatabaseManager implements IDatabaseOperations {
 
 	private Datastore datastore;
+	
+	public DatabaseOperationsImpl() {
+		super("");
+	}
 	
 	public DatabaseOperationsImpl(String environment) {
 		super(environment);
@@ -157,6 +163,12 @@ public class DatabaseOperationsImpl extends DatabaseManager implements IDatabase
 		utenteCustom.setName(utente.getFirstName());
 		utenteCustom.setUsername(utente.getUserName());
 		return utenteCustom;
+	}
+
+	@Override
+	public void addListUrlImages(List<String> urlImages, String collection) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

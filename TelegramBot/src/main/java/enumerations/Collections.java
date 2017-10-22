@@ -3,7 +3,8 @@ package enumerations;
 public enum Collections {
 
 	USERS("users"),
-	UTENTI("utenti");
+	UTENTI("utenti"),
+	IMAGE("image");
 	
 	private String CollectionName;
 

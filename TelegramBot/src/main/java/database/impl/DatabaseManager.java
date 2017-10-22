@@ -25,12 +25,17 @@ public class DatabaseManager implements IDatabase {
 //		init();
 	}
 
+	/**
+	 * Creazione Oggetto di interfacciamento con il database MongoDB
+	 * @param dbname
+	 * @return
+	 */
 	private Datastore getDatastoreIstance(String dbname) {
 		final Morphia morphia = new Morphia();
 
 		// tell Morphia where to find your classes
 		// can be called multiple times with different packages or classes
-		morphia.mapPackage("org.mongodb.morphia.example");
+//		morphia.mapPackage("org.mongodb.morphia.example");
 
 		// create the Datastore connecting to the default port on the local host
 		datastore = morphia.createDatastore(getOpenClientConnection(), dbname);
@@ -101,6 +106,7 @@ public class DatabaseManager implements IDatabase {
 		} else {
 			System.out.println("Connessione DB attiva recupero quella aperta....");
 			database = getOpenDatabaseConnection();
+			datastore = getDatastoreIstance(db_name);
 		}
 		
 		return database;

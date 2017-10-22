@@ -2,6 +2,8 @@ package bot;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 import org.telegram.telegrambots.api.methods.send.SendMessage;
 import org.telegram.telegrambots.api.methods.send.SendPhoto;
@@ -12,15 +14,17 @@ import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.exceptions.TelegramApiException;
 import org.telegram.telegrambots.logging.BotLogger;
 
+import beans.Image;
 import database.IDatabaseOperations;
 import database.impl.DatabaseOperationsImpl;
+import mainProcess.LoadImages;
 import yaml.configuration.ConfigYaml;
 import yaml.configuration.YamlManager;
 
 /**
- * Classe base del boot
- * nel caso creare delle classi più rqaffinate ed estendere questa che estende la classe API di telegram per 
- * il polling sul boot in hadler su cosa accade nella chat.
+ * Classe base del boot nel caso creare delle classi più rqaffinate ed estendere
+ * questa che estende la classe API di telegram per il polling sul boot in
+ * hadler su cosa accade nella chat.
  * 
  * @author u.palo
  *
@@ -34,13 +38,17 @@ public class SausmagicBot extends TelegramLongPollingBot {
 	long chat_id;
 	private ConfigYaml configYaml;
 	public IDatabaseOperations db_op;
+	private List<Image> listImage;
 
 	public SausmagicBot() {
 		super();
-		//inizializzazione configurazione 
+		// inizializzazione configurazione
 		configYaml = YamlManager.getConfigYaml();
-		//inizializzazione MAnagerFactory per connessione a DB
-		db_op=new DatabaseOperationsImpl(System.getenv("env"));
+		// inizializzazione MAnagerFactory per connessione a DB
+		db_op = new DatabaseOperationsImpl(System.getenv("env"));
+		LoadImages a = new LoadImages("");
+		listImage = 	a.getAllImages(null);
+
 	}
 
 	public SausmagicBot(DefaultBotOptions options) {
@@ -87,8 +95,21 @@ public class SausmagicBot extends TelegramLongPollingBot {
 				LOGGER.info("invio", "photo");
 				;
 				// User sent /pic
-				SendPhoto msg = new SendPhoto().setChatId(chat_id)
-						.setPhoto("https://i0.wp.com/www.roadtvitalia.it/wp-content/uploads/2015/09/foto-belle-donne-sportive-10.jpg?zoom=2&w=1136&h=852&crop").setCaption("Malament....");
+				SendPhoto msg = new SendPhoto().setChatId(chat_id).setPhoto(
+						"https://i0.wp.com/www.roadtvitalia.it/wp-content/uploads/2015/09/foto-belle-donne-sportive-10.jpg?zoom=2&w=1136&h=852&crop")
+						.setCaption("Malament....");
+				try {
+					sendPhoto(msg); // Call method to send the photo
+				} catch (TelegramApiException e) {
+					e.printStackTrace();
+				}
+			} else if (message_text.equals("bellafiga")) {
+				LOGGER.info("invio", "photo");
+				LoadImages a = new LoadImages("");
+				String urlimage = listImage.get(ThreadLocalRandom.current().nextInt(0, listImage.size() + 1)).getUrl();
+				System.out.println("Urlimage caricata: "+urlimage);
+				SendPhoto msg = new SendPhoto().setChatId(chat_id).setPhoto(urlimage)
+						.setCaption("Malament2....");
 				try {
 					sendPhoto(msg); // Call method to send the photo
 				} catch (TelegramApiException e) {
@@ -106,7 +127,8 @@ public class SausmagicBot extends TelegramLongPollingBot {
 			}
 
 		}
-		//Qui carichiamo l'immagine inviata sul server di telegram che ci fornisce l'id associato all'immagine da utilizzare per recuperarla
+		// Qui carichiamo l'immagine inviata sul server di telegram che ci fornisce l'id
+		// associato all'immagine da utilizzare per recuperarla
 		else if (update.hasMessage() && update.getMessage().hasPhoto()) {
 			// Message contains photo
 			// Set variables
