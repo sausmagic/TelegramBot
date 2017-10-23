@@ -117,7 +117,8 @@ public class DatabaseOperationsImpl extends DatabaseManager implements IDatabase
 		datastore = getDataStore();
 		
 		Utente utenteC = transform(utente, chatId);
-		int searchUser = datastore.createQuery(Utente.class).field("id").equalIgnoreCase(utente.getUserName()).asList().size();
+		System.out.println("Verifico la presenza a database di questo utente: "+utenteC);
+		int searchUser = datastore.createQuery(Utente.class).field("id").equalIgnoreCase(utente.getId()).asList().size();
 		if(searchUser<=0) {
 			datastore.save(utenteC);
 			System.out.println("Salvo utente a DB");
@@ -160,7 +161,7 @@ public class DatabaseOperationsImpl extends DatabaseManager implements IDatabase
 	private Utente transform(User utente, Long chatId) {
 		Utente utenteCustom = new Utente();
 		utenteCustom.setChatId(chatId);
-		utenteCustom.setId(utente.getId());
+		utenteCustom.setId(String.valueOf(utente.getId()));
 		utenteCustom.setCognome(utente.getLastName());
 		utenteCustom.setName(utente.getFirstName());
 		utenteCustom.setUsername(utente.getUserName());
