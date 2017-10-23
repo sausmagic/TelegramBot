@@ -12,8 +12,6 @@ import utils.MD5Generator;
 
 public class ImageFactory extends DatabaseOperationsImpl {
 
-	// private static Datastore datastore;
-
 	public ImageFactory(String environment) {
 		super(environment);
 	}

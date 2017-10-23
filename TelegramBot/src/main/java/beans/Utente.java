@@ -1,5 +1,7 @@
 package beans;
 
+import java.util.Arrays;
+
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Field;
 import org.mongodb.morphia.annotations.Id;
@@ -20,7 +22,8 @@ public class Utente {
 	private String id;
 	private String name;
 	private String cognome;
-	private Long chatId;
+	//rappresenta l'informazione delle chatida cui l'utente ha fatto accesso con il bot attivo
+	private Long[] chatId;
 	private String username;
 	
 	public String getId() {
@@ -41,11 +44,11 @@ public class Utente {
 	public void setCognome(String cognome) {
 		this.cognome = cognome;
 	}
-	public Long getChatId() {
+	public Long[] getChatId() {
 		return chatId;
 	}
-	public void setChatId(Long chatId) {
-		this.chatId = chatId;
+	public void setChatId(Long[] chatIds) {
+		this.chatId = chatIds;
 	}
 	public String getUsername() {
 		return username;
@@ -55,10 +58,9 @@ public class Utente {
 	}
 	@Override
 	public String toString() {
-		return "Utente [id=" + id + ", name=" + name + ", cognome=" + cognome + ", chatId=" + chatId + ", username="
-				+ username + "]";
+		return "Utente [id=" + id + ", name=" + name + ", cognome=" + cognome + ", chatId=" + Arrays.toString(chatId)
+				+ ", username=" + username + "]";
 	}
-	
 	
 	
 }
