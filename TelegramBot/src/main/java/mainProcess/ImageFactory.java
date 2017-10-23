@@ -101,6 +101,9 @@ public class ImageFactory extends DatabaseOperationsImpl {
 		case MOTO:
 			toReturn = getListImage(Group.Category.MOTO.getCategoryName());
 			break;
+		case INTERNAL_USERS:
+			toReturn = getListImage(Group.Category.INTERNAL_USERS.getCategoryName());
+			break;
 		default:
 			break;
 		}
