@@ -18,17 +18,19 @@ public class Main {
 	ClassLoader classLoader = getClass().getClassLoader();
 	private static ImageFactory factoryImage = new ImageFactory();
 	private static UtenteFactory userFactory = new UtenteFactory();
+	private static Main mainProces = new Main();
 
+	
 	public static void main(String[] args) throws IOException {
-		// String filename = "tmp/ferrari.txt";
+		 String filename = "tmp/ferrari.txt";
 		// String filename = "tmp/girl.txt";
 		// String category = Group.Category.GIRL.getCategoryName();
 
-		// getAllImages(Group.Category.GIRL);
-		// loadImages(filename, mainProces, category);
+		 getAllImages(Group.Category.GIRL);
+//		 loadImages(filename, mainProces, Group.Category.AUTO.getCategoryName());
 		// deleteImageToDb(Group.Category.GIRL.getCategoryName());
 
-		removeUsers();
+//		removeUsers();
 
 	}
 
