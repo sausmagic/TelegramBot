@@ -1,5 +1,6 @@
 package database.impl;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.bson.Document;
@@ -22,11 +23,11 @@ import enumerations.Collections;
 public class DatabaseOperationsImpl extends DatabaseManager implements IDatabaseOperations {
 
 	private Datastore datastore;
-	
+
 	public DatabaseOperationsImpl() {
 		super("");
 	}
-	
+
 	public DatabaseOperationsImpl(String environment) {
 		super(environment);
 		getOpenDatabaseConnection();
@@ -90,7 +91,7 @@ public class DatabaseOperationsImpl extends DatabaseManager implements IDatabase
 		MongoCollection<Document> documents = database.getCollection(collectionName);
 		FindIterable<Document> iterableDocuments = documents.find();
 		for (Document document : iterableDocuments) {
-			System.out.println(collectionName+"-->"+document.toJson());
+			System.out.println(collectionName + "-->" + document.toJson());
 		}
 
 	}
@@ -115,50 +116,73 @@ public class DatabaseOperationsImpl extends DatabaseManager implements IDatabase
 		// migliorare inizialiazzazione
 		getOpenDatabaseConnection();
 		datastore = getDataStore();
-		
-		Utente utenteC = transform(utente, chatId);
-		System.out.println("Verifico la presenza a database di questo utente: "+utenteC);
-		int searchUser = datastore.createQuery(Utente.class).field("id").equalIgnoreCase(utente.getId()).asList().size();
-		if(searchUser<=0) {
+		boolean isAlreadyChatRegister = false;
+
+		System.out.println("Verifico la presenza a database di questo utente: " + utente);
+		int searchUser = datastore.createQuery(Utente.class).field("id").equalIgnoreCase(utente.getId()).asList()
+				.size();
+
+		if (searchUser <= 0) {
+			Long[] chatids = { chatId };
+			Utente utenteC = transform(utente, chatids);
 			datastore.save(utenteC);
 			System.out.println("Salvo utente a DB");
-		}else {
-			System.out.println("Utente presente nel database");
+		} else {
+			// Utente già registrato ma potrebbe essere entrato in una chat diversa con il
+			// bot attivo
+			Utente utenteC = datastore.createQuery(Utente.class).field("id").equalIgnoreCase(utente.getId()).get();
+
+			//check appartenenza a gruppo chact del bot
+			for (int i = 0; i < utenteC.getChatId().length; i++) {
+				if (utenteC.getChatId()[i].longValue() == chatId) {
+					isAlreadyChatRegister = true;
+				}
+			}
+
+			//l'utente non ha mai fatto accesso a questa chat lo censiamo
+			if (!isAlreadyChatRegister) {
+				Long[] chatIds = utenteC.getChatId();
+				chatIds = Arrays.copyOf(chatIds, chatIds.length+1);
+				chatIds[utenteC.getChatId().length] = chatId;
+				utenteC.setChatId(chatIds);
+				// utente aggiornato
+				datastore.save(utenteC);
+				System.out.println("Utente censito nel nuovo gruppo chat");
+			}else {
+				System.out.println("Utente presente nel database");
+			}		
 		}
-/**
- * 
- * Umberto:
- * difficolta nell'usare nativamente la scrittura dei pojo custom si utilizza per ora MORPHIA equaivalente hibernate driver ORM
- * 
-		//per utilizzare i pojo con MongoDb è necessario definire il Custom CodecRegistry
-				CodecRegistry pojoCodecRegistry = CodecRegistries.fromRegistries(MongoClient.getDefaultCodecRegistry(),
-						CodecRegistries.fromProviders(PojoCodecProvider.builder().automatic(true).build()));
-				database = database.withCodecRegistry(pojoCodecRegistry);
-//		MongoCollection<Utente> collectionUtente = getCollection(database, Collections.UTENTI.getCollectionName());
-		
-//		Block<Utente> printBlock = new Block<Utente>() {
-//			@Override
-//			public void apply(final Utente person) {
-//				if (person.getId() == utenteC.getId()) {
-//					System.out.println("Aggiungo Utente a DB: "+utenteC);
-//					collectionUtente.insertOne(utenteC);
-//				} else {
-//					System.out.println("Utente esistente a DB: "+utenteC);
-//				}
-//			}
-//		};
-//		collectionUtente.find().forEach(printBlock);
- * 
- */
+		/**
+		 * 
+		 * Umberto: difficolta nell'usare nativamente la scrittura dei pojo custom si
+		 * utilizza per ora MORPHIA equaivalente hibernate driver ORM
+		 * 
+		 * //per utilizzare i pojo con MongoDb è necessario definire il Custom
+		 * CodecRegistry CodecRegistry pojoCodecRegistry =
+		 * CodecRegistries.fromRegistries(MongoClient.getDefaultCodecRegistry(),
+		 * CodecRegistries.fromProviders(PojoCodecProvider.builder().automatic(true).build()));
+		 * database = database.withCodecRegistry(pojoCodecRegistry); //
+		 * MongoCollection<Utente> collectionUtente = getCollection(database,
+		 * Collections.UTENTI.getCollectionName());
+		 * 
+		 * // Block<Utente> printBlock = new Block<Utente>() { // @Override // public
+		 * void apply(final Utente person) { // if (person.getId() == utenteC.getId()) {
+		 * // System.out.println("Aggiungo Utente a DB: "+utenteC); //
+		 * collectionUtente.insertOne(utenteC); // } else { //
+		 * System.out.println("Utente esistente a DB: "+utenteC); // } // } // }; //
+		 * collectionUtente.find().forEach(printBlock);
+		 * 
+		 */
 	}
 
 	/**
-	 * trasformer interno bean utente custom 
+	 * trasformer interno bean utente custom
+	 * 
 	 * @param utente
 	 * @param chatId
 	 * @return
 	 */
-	private Utente transform(User utente, Long chatId) {
+	private Utente transform(User utente, Long[] chatId) {
 		Utente utenteCustom = new Utente();
 		utenteCustom.setChatId(chatId);
 		utenteCustom.setId(String.valueOf(utente.getId()));
@@ -171,7 +195,7 @@ public class DatabaseOperationsImpl extends DatabaseManager implements IDatabase
 	@Override
 	public void addListUrlImages(List<String> urlImages, String collection) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 }

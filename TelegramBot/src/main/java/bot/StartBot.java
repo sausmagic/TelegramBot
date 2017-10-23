@@ -9,7 +9,7 @@ import bot.extender.ServiceOperations;
 import database.impl.DatabaseManager;
 
 
-public class Main {
+public class StartBot {
 
 	public static void main(String[] args) {
 		

@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Scanner;
 
 import beans.Image;
+import beans.Utente;
 import enumerations.Group;
 import enumerations.Group.Category;
 
@@ -16,17 +17,23 @@ public class Main {
 	// Get file from resources folder
 	ClassLoader classLoader = getClass().getClassLoader();
 	private static ImageFactory factoryImage = new ImageFactory();
+	private static UtenteFactory userFactory = new UtenteFactory();
 
 	public static void main(String[] args) throws IOException {
 		// String filename = "tmp/ferrari.txt";
-		String filename = "tmp/girl.txt";
-		String category = Group.Category.GIRL.getCategoryName();
-		Main mainProces = new Main();
+		// String filename = "tmp/girl.txt";
+		// String category = Group.Category.GIRL.getCategoryName();
 
-		getAllImages(Group.Category.GIRL);
+		// getAllImages(Group.Category.GIRL);
 		// loadImages(filename, mainProces, category);
 		// deleteImageToDb(Group.Category.GIRL.getCategoryName());
 
+		removeUsers();
+
+	}
+
+	private static void removeUsers() {
+		userFactory.removeAllUsers();
 	}
 
 	private static void getAllImages(Category category) {
