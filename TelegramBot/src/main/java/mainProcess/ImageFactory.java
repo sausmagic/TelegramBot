@@ -10,15 +10,15 @@ import enumerations.Group;
 import enumerations.Group.Category;
 import utils.MD5Generator;
 
-public class LoadImages extends DatabaseOperationsImpl {
+public class ImageFactory extends DatabaseOperationsImpl {
 
 	// private static Datastore datastore;
 
-	public LoadImages(String environment) {
+	public ImageFactory(String environment) {
 		super(environment);
 	}
 
-	public LoadImages() {
+	public ImageFactory() {
 		super(System.getenv("env"));
 	}
 

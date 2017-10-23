@@ -19,7 +19,7 @@ import beans.Image;
 import database.IDatabaseOperations;
 import database.impl.DatabaseOperationsImpl;
 import enumerations.Group;
-import mainProcess.LoadImages;
+import mainProcess.ImageFactory;
 import yaml.configuration.ConfigYaml;
 import yaml.configuration.YamlManager;
 
@@ -35,7 +35,7 @@ public class SausmagicBot extends TelegramLongPollingBot {
 
 	private static final BotLogger LOGGER = new BotLogger();
 
-	private LoadImages imageService = new LoadImages();
+	private ImageFactory imageService = new ImageFactory();
 
 	private String messageToSent = "";
 	String message_text;
@@ -122,7 +122,7 @@ public class SausmagicBot extends TelegramLongPollingBot {
 			} else if (message_text.equals("bellafiga")
 					|| message_text.toLowerCase().matches(".*bella.*|.*figa.*|.*culo.*|.*tette.*")) {
 				LOGGER.info("invio", "photo");
-				String urlimage = listImage.get(ThreadLocalRandom.current().nextInt(0, listImage.size() + 1)).getUrl()
+				String urlimage = listImageSexy.get(ThreadLocalRandom.current().nextInt(0, listImageSexy.size() + 1)).getUrl()
 						.trim();
 				System.out.println("Urlimage caricata: " + urlimage);
 				SendPhoto msg = new SendPhoto().setChatId(chat_id).setPhoto(urlimage)

@@ -15,35 +15,43 @@ public class Main {
 
 	// Get file from resources folder
 	ClassLoader classLoader = getClass().getClassLoader();
+	private static ImageFactory factoryImage = new ImageFactory();
 
 	public static void main(String[] args) throws IOException {
-//		String filename = "tmp/ferrari.txt";
+		// String filename = "tmp/ferrari.txt";
 		String filename = "tmp/girl.txt";
 		String category = Group.Category.GIRL.getCategoryName();
 		Main mainProces = new Main();
 
-		loadImages(filename, mainProces, category);
-//		deleteImageToDb(Group.Category.GIRL.getCategoryName());
+		getAllImages(Group.Category.GIRL);
+		// loadImages(filename, mainProces, category);
+		// deleteImageToDb(Group.Category.GIRL.getCategoryName());
 
+	}
+
+	private static void getAllImages(Category category) {
+		for (Image image : factoryImage.getAllImages(category)) {
+			System.out.println(image);
+		}
 	}
 
 	private static void deleteImageToDb(String categoryName) {
-		LoadImages a2 = new LoadImages();
-		a2.deleteImageToDb(categoryName);
-		
+
+		factoryImage.deleteImageToDb(categoryName);
+
 	}
 
 	private static void loadImages(String filename, Main mainProces, String category) {
-		
-			List<String> result = mainProces.getFile(filename);
-			LoadImages a2 = new LoadImages();
-			if (a2.loadImages(result, category)) {
-				System.out.println("Inseriti a DB questi valori");
-				for (Image image : a2.getAllImages(Group.Category.ALL)) {
-					System.out.println(image);
-				}
+
+		List<String> result = mainProces.getFile(filename);
+		ImageFactory factoryImage = new ImageFactory();
+		if (factoryImage.loadImages(result, category)) {
+			System.out.println("Inseriti a DB questi valori");
+			for (Image image : factoryImage.getAllImages(Group.Category.ALL)) {
+				System.out.println(image);
 			}
-		
+		}
+
 	}
 
 	// private static void writeFile(String filename, List<String> result) throws
