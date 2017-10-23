@@ -15,10 +15,12 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.MongoIterable;
 
+import beans.Image;
 import beans.Utente;
 import database.IDatabaseOperations;
 import database.impl.DatabaseManager;
 import enumerations.Collections;
+import enumerations.Group;
 
 public class DatabaseOperationsImpl extends DatabaseManager implements IDatabaseOperations {
 
@@ -192,10 +194,23 @@ public class DatabaseOperationsImpl extends DatabaseManager implements IDatabase
 		return utenteCustom;
 	}
 
-	@Override
-	public void addListUrlImages(List<String> urlImages, String collection) {
-		// TODO Auto-generated method stub
+	
 
+	@Override
+	public Image storeUserChatPhoto(String f_id, int f_width, int f_height, long chat_id, User user) {
+		Image image = new Image();
+		image.setId(f_id);
+		image.setChatid(chat_id);
+		image.setCategory(Group.Category.INTERNAL_USERS.getCategoryName());
+		image.setGroup(Group.INTERNAL_USERS.getGroupName());
+		Long[] chatid = {chat_id};
+		Utente utente = transform(user, chatid);
+		image.setUtente(utente);
+		image.setUrl(f_id);
+		datastore.save(image);
+		return image;
+		
+		
 	}
 
 }

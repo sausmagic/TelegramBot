@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.telegram.telegrambots.api.objects.User;
 
+import beans.Image;
+
 
 /**
  * Interfaccia che definisce le operazioni possibili che si interfacciano con il database
@@ -64,6 +66,14 @@ public interface IDatabaseOperations {
 	 */
 	  void saveChats(Object objectPojo, String collection);
 	  
-	  void addListUrlImages(List<String> urlImages, String collection);
+	  /**
+	   * Salviamo le informazioni sulle foto inviate nella chat dagli utenti
+	   * @param f_id
+	   * @param f_width
+	   * @param f_height
+	   * @param chat_id
+	   * @param user
+	   */
+	  Image storeUserChatPhoto(String f_id, int f_width, int f_height, long chat_id, User user);
 	
 }

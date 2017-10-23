@@ -7,6 +7,7 @@ import org.mongodb.morphia.annotations.Field;
 import org.mongodb.morphia.annotations.Id;
 import org.mongodb.morphia.annotations.Index;
 import org.mongodb.morphia.annotations.Indexes;
+import org.mongodb.morphia.annotations.Reference;
 
 @Entity("image")
 @Indexes(
@@ -24,6 +25,14 @@ public class Image implements Serializable{
 	private String url;
 	private String category;
 	private String Group;
+	//facciamo un riferimento a una collection esterna (DBRef)
+	
+	@Reference(value="id")
+	private Utente utente;
+	private Long chatid;
+	//umberto: come esempio di oggetto embeddato in un altro
+	//@Embedded // let's us embed a complex object
+//    private Person person;
 	
 	public String getId() {
 		return id;
@@ -49,10 +58,26 @@ public class Image implements Serializable{
 	public void setGroup(String group) {
 		Group = group;
 	}
+	public Utente getUtente() {
+		return utente;
+	}
+	public void setUtente(Utente utente) {
+		this.utente = utente;
+	}
+	public Long getChatid() {
+		return chatid;
+	}
+	public void setChatid(Long chatid) {
+		this.chatid = chatid;
+	}
 	@Override
 	public String toString() {
-		return "Image [id=" + id + ", url=" + url + ", category=" + category + ", Group=" + Group + "]";
+		return "Image [id=" + id + ", url=" + url + ", category=" + category + ", Group=" + Group + ", utente=" + utente
+				+ ", chatid=" + chatid + "]";
 	}
+	
+	
+	
 	
 	
 	

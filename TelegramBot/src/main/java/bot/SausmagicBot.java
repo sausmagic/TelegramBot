@@ -46,6 +46,7 @@ public class SausmagicBot extends TelegramLongPollingBot {
 	private List<Image> listImage;
 	private List<Image> listImageAuto;
 	private List<Image> listImageSexy;
+	private List<Image> listImageUsers;
 
 	public SausmagicBot() {
 		super();
@@ -58,11 +59,21 @@ public class SausmagicBot extends TelegramLongPollingBot {
 		// inizializzazione MAnagerFactory per connessione a DB
 		db_op = new DatabaseOperationsImpl(System.getenv("env"));
 		listImage = imageService.getAllImages(Group.Category.ALL);
-		System.out.println("Immagine caricate dal databse: " + listImage.size()!=null?listImage.size()+"immagini TOTALI ":"non ci sono immagini a BD");
+		System.out.println(
+				"Immagine caricate dal databse: " + listImage.size() != null ? listImage.size() + "immagini TOTALI "
+						: "non ci sono immagini a BD");
 		listImageAuto = imageService.getAllImages(Group.Category.AUTO);
-		System.out.println("Immagine AUTO caricate dal databse: " + listImageAuto.size()!=null?listImageAuto.size()+"immagini AUTO ":"non ci sono immagini a BD");
+		System.out.println("Immagine AUTO caricate dal databse: " + listImageAuto.size() != null
+				? listImageAuto.size() + "immagini AUTO "
+				: "non ci sono immagini a BD");
 		listImageSexy = imageService.getAllImages(Group.Category.GIRL);
-		System.out.println("Immagine SEXY caricate dal databse: " + listImageSexy.size()!=null?listImageSexy.size()+"immagini SEXY ":"non ci sono immagini a BD");
+		System.out.println("Immagine SEXY caricate dal databse: " + listImageSexy.size() != null
+				? listImageSexy.size() + "immagini SEXY "
+				: "non ci sono immagini a BD");
+		listImageUsers = imageService.getAllImages(Group.Category.INTERNAL_USERS);
+		System.out.println("Immagine SEXY caricate dal databse: " + listImageUsers.size() != null
+				? listImageUsers.size() + "immagini USERS "
+				: "non ci sono immagini a BD");
 
 	}
 
@@ -122,8 +133,8 @@ public class SausmagicBot extends TelegramLongPollingBot {
 			} else if (message_text.equals("bellafiga")
 					|| message_text.toLowerCase().matches(".*bella.*|.*figa.*|.*culo.*|.*tette.*")) {
 				LOGGER.info("invio", "photo");
-				String urlimage = listImageSexy.get(ThreadLocalRandom.current().nextInt(0, listImageSexy.size() + 1)).getUrl()
-						.trim();
+				String urlimage = listImageSexy.get(ThreadLocalRandom.current().nextInt(0, listImageSexy.size() + 1))
+						.getUrl().trim();
 				System.out.println("Urlimage caricata: " + urlimage);
 				SendPhoto msg = new SendPhoto().setChatId(chat_id).setPhoto(urlimage)
 						.setCaption(name_User + " Sì nu' Zuzzus' beccati questa ....");
@@ -134,8 +145,8 @@ public class SausmagicBot extends TelegramLongPollingBot {
 				}
 			} else if (message_text.toLowerCase().contains("ferrari")) {
 				LOGGER.info("invio", "photo");
-				String urlimage = listImageAuto.get(ThreadLocalRandom.current().nextInt(0, listImageAuto.size() + 1)).getUrl()
-						.trim();
+				String urlimage = listImageAuto.get(ThreadLocalRandom.current().nextInt(0, listImageAuto.size() + 1))
+						.getUrl().trim();
 				System.out.println("Urlimage caricata: " + urlimage);
 				SendPhoto msg = new SendPhoto().setChatId(chat_id).setPhoto(urlimage)
 						.setCaption(name_User + " Te' piacess....");
@@ -144,6 +155,9 @@ public class SausmagicBot extends TelegramLongPollingBot {
 				} catch (TelegramApiException e) {
 					e.printStackTrace();
 				}
+			} else if (message_text.equals("refresh")) {
+				LOGGER.info("Informazione","eseguo refresh delle liste richiamando la init()....");
+				init();
 			} else {
 				messageToSent = message_text;
 				System.out.println("in chat è stato scritto questo da: " + name_User + " --> " + messageToSent);
