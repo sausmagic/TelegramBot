@@ -43,7 +43,7 @@
 							<archive>
 								<manifest>
 									<addClasspath>true</addClasspath>
-									<mainClass>bot.Main</mainClass>
+									<mainClass>bot.StartBot</mainClass>
 								</manifest>
 							</archive>
 							<descriptorRefs>
