@@ -1,5 +1,7 @@
 package database.impl;
 
+import java.util.List;
+
 import org.bson.Document;
 import org.bson.codecs.configuration.CodecRegistries;
 import org.bson.codecs.configuration.CodecRegistry;
@@ -21,8 +23,14 @@ public class DatabaseOperationsImpl extends DatabaseManager implements IDatabase
 
 	private Datastore datastore;
 	
+	public DatabaseOperationsImpl() {
+		super("");
+	}
+	
 	public DatabaseOperationsImpl(String environment) {
 		super(environment);
+		getOpenDatabaseConnection();
+		datastore = getDataStore();
 	}
 
 	/**
@@ -109,7 +117,7 @@ public class DatabaseOperationsImpl extends DatabaseManager implements IDatabase
 		datastore = getDataStore();
 		
 		Utente utenteC = transform(utente, chatId);
-		int searchUser = datastore.createQuery(Utente.class).field("username").equalIgnoreCase(utente.getUserName()).asList().size();
+		int searchUser = datastore.createQuery(Utente.class).field("id").equalIgnoreCase(utente.getUserName()).asList().size();
 		if(searchUser<=0) {
 			datastore.save(utenteC);
 			System.out.println("Salvo utente a DB");
@@ -157,6 +165,12 @@ public class DatabaseOperationsImpl extends DatabaseManager implements IDatabase
 		utenteCustom.setName(utente.getFirstName());
 		utenteCustom.setUsername(utente.getUserName());
 		return utenteCustom;
+	}
+
+	@Override
+	public void addListUrlImages(List<String> urlImages, String collection) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
