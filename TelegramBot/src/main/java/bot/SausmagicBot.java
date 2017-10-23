@@ -132,7 +132,7 @@ public class SausmagicBot extends TelegramLongPollingBot {
 				} catch (TelegramApiException e) {
 					e.printStackTrace();
 				}
-			} else if (message_text.equalsIgnoreCase("ferrari")) {
+			} else if (message_text.toLowerCase().contains("ferrari")) {
 				LOGGER.info("invio", "photo");
 				String urlimage = listImageAuto.get(ThreadLocalRandom.current().nextInt(0, listImageAuto.size() + 1)).getUrl()
 						.trim();
