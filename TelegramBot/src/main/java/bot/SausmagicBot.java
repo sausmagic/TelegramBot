@@ -18,6 +18,7 @@ import org.telegram.telegrambots.logging.BotLogger;
 import beans.Image;
 import database.IDatabaseOperations;
 import database.impl.DatabaseOperationsImpl;
+import enumerations.Group;
 import mainProcess.LoadImages;
 import yaml.configuration.ConfigYaml;
 import yaml.configuration.YamlManager;
@@ -43,15 +44,25 @@ public class SausmagicBot extends TelegramLongPollingBot {
 	private ConfigYaml configYaml;
 	public IDatabaseOperations db_op;
 	private List<Image> listImage;
+	private List<Image> listImageAuto;
+	private List<Image> listImageSexy;
 
 	public SausmagicBot() {
 		super();
+		init();
+	}
+
+	private void init() {
 		// inizializzazione configurazione
 		configYaml = YamlManager.getConfigYaml();
 		// inizializzazione MAnagerFactory per connessione a DB
 		db_op = new DatabaseOperationsImpl(System.getenv("env"));
-		listImage = 	imageService.getAllImages(null);
-		System.out.println("Immagine caricate dal databse: "+listImage.size());
+		listImage = imageService.getAllImages(Group.Category.ALL);
+		System.out.println("Immagine caricate dal databse: " + listImage.size()!=null?listImage.size()+"immagini TOTALI ":"non ci sono immagini a BD");
+		listImageAuto = imageService.getAllImages(Group.Category.AUTO);
+		System.out.println("Immagine AUTO caricate dal databse: " + listImageAuto.size()!=null?listImageAuto.size()+"immagini AUTO ":"non ci sono immagini a BD");
+		listImageSexy = imageService.getAllImages(Group.Category.GIRL);
+		System.out.println("Immagine SEXY caricate dal databse: " + listImageSexy.size()!=null?listImageSexy.size()+"immagini SEXY ":"non ci sono immagini a BD");
 
 	}
 
@@ -102,18 +113,32 @@ public class SausmagicBot extends TelegramLongPollingBot {
 				// User sent /pic
 				SendPhoto msg = new SendPhoto().setChatId(chat_id).setPhoto(
 						"https://i0.wp.com/www.roadtvitalia.it/wp-content/uploads/2015/09/foto-belle-donne-sportive-10.jpg?zoom=2&w=1136&h=852&crop")
-						.setCaption(name_User+" Sei un Malament....");
+						.setCaption(name_User + " Sei un Malament....");
 				try {
 					sendPhoto(msg); // Call method to send the photo
 				} catch (TelegramApiException e) {
 					e.printStackTrace();
 				}
-			} else if (message_text.equals("bellafiga") || message_text.matches(".*bella.*|.*figa.*|.*culo.*|.*tette.*")) {
+			} else if (message_text.equals("bellafiga")
+					|| message_text.toLowerCase().matches(".*bella.*|.*figa.*|.*culo.*|.*tette.*")) {
 				LOGGER.info("invio", "photo");
-				String urlimage = listImage.get(ThreadLocalRandom.current().nextInt(0, listImage.size() + 1)).getUrl().trim();
-				System.out.println("Urlimage caricata: "+urlimage);
+				String urlimage = listImage.get(ThreadLocalRandom.current().nextInt(0, listImage.size() + 1)).getUrl()
+						.trim();
+				System.out.println("Urlimage caricata: " + urlimage);
 				SendPhoto msg = new SendPhoto().setChatId(chat_id).setPhoto(urlimage)
-						.setCaption(name_User+ " Sì nu' Zuzzus' beccati questa ....");
+						.setCaption(name_User + " Sì nu' Zuzzus' beccati questa ....");
+				try {
+					sendPhoto(msg); // Call method to send the photo
+				} catch (TelegramApiException e) {
+					e.printStackTrace();
+				}
+			} else if (message_text.equalsIgnoreCase("ferrari")) {
+				LOGGER.info("invio", "photo");
+				String urlimage = listImageAuto.get(ThreadLocalRandom.current().nextInt(0, listImageAuto.size() + 1)).getUrl()
+						.trim();
+				System.out.println("Urlimage caricata: " + urlimage);
+				SendPhoto msg = new SendPhoto().setChatId(chat_id).setPhoto(urlimage)
+						.setCaption(name_User + " Te' piacess....");
 				try {
 					sendPhoto(msg); // Call method to send the photo
 				} catch (TelegramApiException e) {
@@ -121,15 +146,15 @@ public class SausmagicBot extends TelegramLongPollingBot {
 				}
 			} else {
 				messageToSent = message_text;
-				System.out.println("in chat è stato scritto questo da: "+name_User+" --> "+messageToSent);
+				System.out.println("in chat è stato scritto questo da: " + name_User + " --> " + messageToSent);
 
-//				SendMessage message = new SendMessage() // Create a message object object
-//						.setChatId(chat_id).setText(messageToSent);
-//				try {
-//					execute(message); // Sending our message object to user
-//				} catch (TelegramApiException e) {
-//					e.printStackTrace();
-//				}
+				// SendMessage message = new SendMessage() // Create a message object object
+				// .setChatId(chat_id).setText(messageToSent);
+				// try {
+				// execute(message); // Sending our message object to user
+				// } catch (TelegramApiException e) {
+				// e.printStackTrace();
+				// }
 			}
 
 		}
@@ -155,23 +180,24 @@ public class SausmagicBot extends TelegramLongPollingBot {
 			// Set photo caption
 			String caption = "file_id: " + f_id + "\nwidth: " + Integer.toString(f_width) + "\nheight: "
 					+ Integer.toString(f_height);
-//			SendPhoto msg = new SendPhoto().setChatId(chat_id).setPhoto(f_id).setCaption(caption);
-//			try {
-//				sendPhoto(msg); // Call method to send the photo with caption
-//			} catch (TelegramApiException e) {
-//				e.printStackTrace();
-//			}
+			// SendPhoto msg = new
+			// SendPhoto().setChatId(chat_id).setPhoto(f_id).setCaption(caption);
+			// try {
+			// sendPhoto(msg); // Call method to send the photo with caption
+			// } catch (TelegramApiException e) {
+			// e.printStackTrace();
+			// }
 		} else {
 			// se nessuno degli altri andiamo in echo message
 			messageToSent = message_text;
-			System.out.println("in chat è stato scritto questo da: "+name_User+" --> "+messageToSent);
-//			SendMessage message = new SendMessage() // Create a message object object
-//					.setChatId(chat_id).setText(messageToSent);
-//			try {
-//				execute(message); // Sending our message object to user
-//			} catch (TelegramApiException e) {
-//				e.printStackTrace();
-//			}
+			System.out.println("in chat è stato scritto questo da: " + name_User + " --> " + messageToSent);
+			// SendMessage message = new SendMessage() // Create a message object object
+			// .setChatId(chat_id).setText(messageToSent);
+			// try {
+			// execute(message); // Sending our message object to user
+			// } catch (TelegramApiException e) {
+			// e.printStackTrace();
+			// }
 		}
 	}
 
@@ -179,10 +205,10 @@ public class SausmagicBot extends TelegramLongPollingBot {
 	public String getBotToken() {
 		return configYaml.getTelegramProperties().getToken();
 	}
-	
+
 	public static void main(String[] args) {
-		String bella ="fig";
-		if(bella.matches(".*bella.*|.*figa.*|.*culo.*|.*tette.*")) {
+		String bella = "fig";
+		if (bella.matches(".*bella.*|.*figa.*|.*culo.*|.*tette.*")) {
 			System.out.println("trovato");
 		}
 	}
