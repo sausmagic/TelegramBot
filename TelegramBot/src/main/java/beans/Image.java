@@ -27,7 +27,7 @@ public class Image implements Serializable{
 	private String Group;
 	//facciamo un riferimento a una collection esterna (DBRef)
 	
-	@Reference(value="id")
+	@Reference(value="utente")
 	private Utente utente;
 	private Long chatid;
 	//umberto: come esempio di oggetto embeddato in un altro
