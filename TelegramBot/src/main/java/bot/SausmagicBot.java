@@ -98,7 +98,17 @@ public class SausmagicBot extends TelegramLongPollingBot {
 
 			chat_id = update.getMessage().getChatId();
 
-			if (message_text.equals("cacca")) {
+			if (message_text.equals("statistic")) {
+				messageToSent = "statistiche: ";
+				db_op.getStatisticUser(user);
+//				SendMessage message = new SendMessage() // Create a message object object
+//						.setChatId(chat_id).setText(messageToSent);
+//				try {
+//					execute(message); // Sending our message object to user
+//				} catch (TelegramApiException e) {
+//					e.printStackTrace();
+//				}
+			} else if (message_text.equals("cacca")) {
 				messageToSent = "sei una merdaccia!";
 				SendMessage message = new SendMessage() // Create a message object object
 						.setChatId(chat_id).setText(messageToSent);
@@ -156,7 +166,7 @@ public class SausmagicBot extends TelegramLongPollingBot {
 					e.printStackTrace();
 				}
 			} else if (message_text.equals("refresh")) {
-				LOGGER.info("Informazione","eseguo refresh delle liste richiamando la init()....");
+				LOGGER.info("Informazione", "eseguo refresh delle liste richiamando la init()....");
 				init();
 			} else {
 				messageToSent = message_text;

@@ -5,6 +5,7 @@ import java.util.List;
 import org.telegram.telegrambots.api.objects.User;
 
 import beans.Image;
+import beans.Statistics;
 
 
 /**
@@ -76,4 +77,5 @@ public interface IDatabaseOperations {
 	   */
 	  Image storeUserChatPhoto(String f_id, int f_width, int f_height, long chat_id, User user);
 	
+	  Statistics getStatisticUser(User user);
 }
