@@ -16,6 +16,7 @@ import org.telegram.telegrambots.exceptions.TelegramApiException;
 import org.telegram.telegrambots.logging.BotLogger;
 
 import beans.Image;
+import beans.Statistics;
 import database.IDatabaseOperations;
 import database.impl.DatabaseOperationsImpl;
 import enumerations.Group;
@@ -34,10 +35,11 @@ import yaml.configuration.YamlManager;
 public class SausmagicBot extends TelegramLongPollingBot {
 
 	private static final BotLogger LOGGER = new BotLogger();
-
+	private static final String NEW_LINE= System.getProperty("line.separator");
 	private ImageFactory imageService = new ImageFactory();
 
 	private String messageToSent = "";
+	private StringBuffer stringbuffer;
 	String message_text;
 	long chat_id;
 	User user;
@@ -98,7 +100,21 @@ public class SausmagicBot extends TelegramLongPollingBot {
 
 			chat_id = update.getMessage().getChatId();
 
-			if (message_text.equals("cacca")) {
+			if (message_text.equals("statistic")) {
+				stringbuffer = new StringBuffer();
+				stringbuffer.append("statistiche: ");
+//				db_op.getStatisticUser(user);
+				Statistics stat = db_op.getStatisticUserByMorphia(user);
+				stringbuffer.append(NEW_LINE).append(stat.getNumFotoPublicate()).append(NEW_LINE).append(NEW_LINE).append("Sono le immagini che hai inviato nelle chat in cui questo bot è presente");
+				
+				SendMessage message = new SendMessage() // Create a message object object
+						.setChatId(chat_id).setText(stringbuffer.toString());
+				try {
+					execute(message); // Sending our message object to user
+				} catch (TelegramApiException e) {
+					e.printStackTrace();
+				}
+			} else if (message_text.equals("cacca")) {
 				messageToSent = "sei una merdaccia!";
 				SendMessage message = new SendMessage() // Create a message object object
 						.setChatId(chat_id).setText(messageToSent);
@@ -156,7 +172,7 @@ public class SausmagicBot extends TelegramLongPollingBot {
 					e.printStackTrace();
 				}
 			} else if (message_text.equals("refresh")) {
-				LOGGER.info("Informazione","eseguo refresh delle liste richiamando la init()....");
+				LOGGER.info("Informazione", "eseguo refresh delle liste richiamando la init()....");
 				init();
 			} else {
 				messageToSent = message_text;

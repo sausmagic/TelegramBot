@@ -18,17 +18,24 @@ public class Main {
 	ClassLoader classLoader = getClass().getClassLoader();
 	private static ImageFactory factoryImage = new ImageFactory();
 	private static UtenteFactory userFactory = new UtenteFactory();
+	private static Main mainProces = new Main();
 
+	
 	public static void main(String[] args) throws IOException {
-		// String filename = "tmp/ferrari.txt";
-		// String filename = "tmp/girl.txt";
+//		 String filename = "tmp/ferrari.txt";
+//		 String filename = "tmp/girl.txt";
 		// String category = Group.Category.GIRL.getCategoryName();
 
-		// getAllImages(Group.Category.GIRL);
-		// loadImages(filename, mainProces, category);
+		 List<Image> images = getAllImages(Group.Category.ALL);
+		 for (Image image : images) {
+			if(image.getUrl().endsWith(".svg")) {
+				System.out.println(image);
+			}
+		}
+//		 loadImages(filename, mainProces, Group.Category.AUTO.getCategoryName());
 		// deleteImageToDb(Group.Category.GIRL.getCategoryName());
 
-		removeUsers();
+//		removeUsers();
 
 	}
 
@@ -36,10 +43,11 @@ public class Main {
 		userFactory.removeAllUsers();
 	}
 
-	private static void getAllImages(Category category) {
+	private static List<Image> getAllImages(Category category) {
 		for (Image image : factoryImage.getAllImages(category)) {
 			System.out.println(image);
 		}
+		return factoryImage.getAllImages(category);
 	}
 
 	private static void deleteImageToDb(String categoryName) {

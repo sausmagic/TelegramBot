@@ -3,24 +3,41 @@ package database.impl;
 import java.util.Arrays;
 import java.util.List;
 
+import org.bson.BsonDocument;
+import org.bson.BsonValue;
 import org.bson.Document;
+import org.bson.codecs.BsonTypeClassMap;
+import org.bson.codecs.BsonValueCodec;
+import org.bson.codecs.DocumentCodec;
 import org.bson.codecs.configuration.CodecRegistries;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
+import org.bson.conversions.Bson;
+import org.bson.json.JsonMode;
+import org.bson.json.JsonWriterSettings;
 import org.mongodb.morphia.Datastore;
+import org.mongodb.morphia.Key;
+import org.mongodb.morphia.query.Query;
 import org.telegram.telegrambots.api.objects.User;
 import com.mongodb.MongoClient;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.MongoIterable;
 
 import beans.Image;
+import beans.Statistics;
 import beans.Utente;
 import database.IDatabaseOperations;
 import database.impl.DatabaseManager;
 import enumerations.Collections;
 import enumerations.Group;
+
+//Umberto: per usare delle feature di query per join o altro che emulano le funzionalità SQL è necessario importare il package MODEL del driver MongoDB
+//Umberto: fondamentale per usare i metodi della famiglia Projection [field, exclude, elemMatch, slice, ecc...	] document.find().projection(fields(include("x", "y"), excludeId()));
+import static com.mongodb.client.model.Projections.*;
+import static com.mongodb.client.model.Filters.*;
 
 public class DatabaseOperationsImpl extends DatabaseManager implements IDatabaseOperations {
 
@@ -134,25 +151,25 @@ public class DatabaseOperationsImpl extends DatabaseManager implements IDatabase
 			// bot attivo
 			Utente utenteC = datastore.createQuery(Utente.class).field("id").equalIgnoreCase(utente.getId()).get();
 
-			//check appartenenza a gruppo chact del bot
+			// check appartenenza a gruppo chact del bot
 			for (int i = 0; i < utenteC.getChatId().length; i++) {
 				if (utenteC.getChatId()[i].longValue() == chatId) {
 					isAlreadyChatRegister = true;
 				}
 			}
 
-			//l'utente non ha mai fatto accesso a questa chat lo censiamo
+			// l'utente non ha mai fatto accesso a questa chat lo censiamo
 			if (!isAlreadyChatRegister) {
 				Long[] chatIds = utenteC.getChatId();
-				chatIds = Arrays.copyOf(chatIds, chatIds.length+1);
+				chatIds = Arrays.copyOf(chatIds, chatIds.length + 1);
 				chatIds[utenteC.getChatId().length] = chatId;
 				utenteC.setChatId(chatIds);
 				// utente aggiornato
 				datastore.save(utenteC);
 				System.out.println("Utente censito nel nuovo gruppo chat");
-			}else {
+			} else {
 				System.out.println("Utente presente nel database");
-			}		
+			}
 		}
 		/**
 		 * 
@@ -194,8 +211,6 @@ public class DatabaseOperationsImpl extends DatabaseManager implements IDatabase
 		return utenteCustom;
 	}
 
-	
-
 	@Override
 	public Image storeUserChatPhoto(String f_id, int f_width, int f_height, long chat_id, User user) {
 		Image image = new Image();
@@ -203,14 +218,72 @@ public class DatabaseOperationsImpl extends DatabaseManager implements IDatabase
 		image.setChatid(chat_id);
 		image.setCategory(Group.Category.INTERNAL_USERS.getCategoryName());
 		image.setGroup(Group.INTERNAL_USERS.getGroupName());
-		Long[] chatid = {chat_id};
+		Long[] chatid = { chat_id };
 		Utente utente = transform(user, chatid);
 		image.setUtente(utente);
 		image.setUrl(f_id);
 		datastore.save(image);
 		return image;
-		
-		
+
 	}
 
+	/**
+	 * Al momento deprecato in quanto non trovo un modo per ottenere facilmente
+	 * l'oggetto referenziato come DBRef Studiare bene le api
+	 */
+	@Override
+	public Statistics getStatisticUser(User user) {
+		Statistics stat = new Statistics();
+		// TODO: recuperare l'utente mediante id dal DB sulla tabella utente
+		Utente utenteC = datastore.createQuery(Utente.class).field("id").equalIgnoreCase(user.getId()).get();
+		System.out.println("Utente Recuperato per info su statistiche: " + utenteC);
+
+		// TODO: recuperare con la relazione image per recuperare le immagini inviate
+		// nella chat e che ha caricato sul DB
+		// si usa la PROJECTION (vedere bene funzionamento su documentazione API)
+
+		// api native driver mongoDB
+		MongoCollection<Document> document = database.getCollection(Collections.IMAGE.getCollectionName());
+
+		FindIterable<Document> findIterable = document.find();
+
+		MongoCursor<Document> cursor = findIterable.iterator();
+		// document.find(eq("utente.id", utenteC.getId()));
+		while (cursor.hasNext()) {
+
+			Document thisDocument = cursor.next();
+			CodecRegistry codecRegistry = CodecRegistries.fromRegistries(MongoClient.getDefaultCodecRegistry());
+			final DocumentCodec codec = new DocumentCodec(codecRegistry, new BsonTypeClassMap());
+			// Umberto: specifico al builder il tipo di modalità di stampa del json. di
+			// default è RELAXED
+			JsonWriterSettings jSonWriterSettings = JsonWriterSettings.builder().outputMode(JsonMode.EXTENDED).build();
+
+			System.out.println(thisDocument.toJson(jSonWriterSettings, codec));
+
+		}
+		// for (Document doc : findIterable) {
+		// System.out.println(doc.toJson());
+		// }
+
+		// Projection con Morphia
+		// List<Image> listImage = datastore.createQuery(Image.class).project("utente",
+		// true).asList();
+		// for (Image image : listImage) {
+		// if (image.getUtente() != null) {
+		// if (image.getUtente().getId().equals(utenteC.getId())) {
+		// System.out.println("Immagine: " + image);
+		// }
+		// }
+		// }
+		return stat;
+	}
+
+	/**
+	 * Demanda il compito dell'operazione al DAO di competenza
+	 */
+	public Statistics getStatisticUserByMorphia(User user) {
+		ImageDaoImpl imageDao = new ImageDaoImpl(Image.class, datastore);
+		return imageDao.getStatisticUserByMorphia(user, datastore);
+
+	}
 }
