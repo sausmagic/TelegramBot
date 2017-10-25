@@ -17,6 +17,7 @@ import org.bson.json.JsonMode;
 import org.bson.json.JsonWriterSettings;
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.Key;
+import org.mongodb.morphia.query.Query;
 import org.telegram.telegrambots.api.objects.User;
 import com.mongodb.MongoClient;
 import com.mongodb.client.FindIterable;
@@ -226,6 +227,10 @@ public class DatabaseOperationsImpl extends DatabaseManager implements IDatabase
 
 	}
 
+	/**
+	 * Al momento deprecato in quanto non trovo un modo per ottenere facilmente
+	 * l'oggetto referenziato come DBRef Studiare bene le api
+	 */
 	@Override
 	public Statistics getStatisticUser(User user) {
 		Statistics stat = new Statistics();
@@ -249,16 +254,16 @@ public class DatabaseOperationsImpl extends DatabaseManager implements IDatabase
 			Document thisDocument = cursor.next();
 			CodecRegistry codecRegistry = CodecRegistries.fromRegistries(MongoClient.getDefaultCodecRegistry());
 			final DocumentCodec codec = new DocumentCodec(codecRegistry, new BsonTypeClassMap());
-			//Umberto: specifico al builder il tipo di modalità di stampa del json. di default è RELAXED
+			// Umberto: specifico al builder il tipo di modalità di stampa del json. di
+			// default è RELAXED
 			JsonWriterSettings jSonWriterSettings = JsonWriterSettings.builder().outputMode(JsonMode.EXTENDED).build();
 
-			System.out.println(thisDocument.toJson(jSonWriterSettings,codec));
-			
-			
+			System.out.println(thisDocument.toJson(jSonWriterSettings, codec));
+
 		}
-//		for (Document doc : findIterable) {
-//			System.out.println(doc.toJson());
-//		}
+		// for (Document doc : findIterable) {
+		// System.out.println(doc.toJson());
+		// }
 
 		// Projection con Morphia
 		// List<Image> listImage = datastore.createQuery(Image.class).project("utente",
@@ -273,4 +278,12 @@ public class DatabaseOperationsImpl extends DatabaseManager implements IDatabase
 		return stat;
 	}
 
+	/**
+	 * Demanda il compito dell'operazione al DAO di competenza
+	 */
+	public Statistics getStatisticUserByMorphia(User user) {
+		ImageDaoImpl imageDao = new ImageDaoImpl(Image.class, datastore);
+		return imageDao.getStatisticUserByMorphia(user, datastore);
+
+	}
 }

@@ -100,7 +100,8 @@ public class SausmagicBot extends TelegramLongPollingBot {
 
 			if (message_text.equals("statistic")) {
 				messageToSent = "statistiche: ";
-				db_op.getStatisticUser(user);
+//				db_op.getStatisticUser(user);
+				db_op.getStatisticUserByMorphia(user);
 //				SendMessage message = new SendMessage() // Create a message object object
 //						.setChatId(chat_id).setText(messageToSent);
 //				try {
