@@ -46,10 +46,10 @@ public class ImageDaoImpl extends BasicDAO<Image, ObjectId> {
 				//.field("utente.id").equal(user.getId());
 				//.field("utente.$id").equal(user.getId());
 		List<Image> listImage = queryImage.asList();
-		for (Image image : listImage) {
-			System.out.println("IMAGE: "+image);
-			System.out.println("UTENTE: " + image.getUtente());
-		}
+//		for (Image image : listImage) {
+//			System.out.println("IMAGE: "+image);
+//			System.out.println("UTENTE: " + image.getUtente());
+//		}
 		Statistics stat = new Statistics();
 		stat.setNumFotoPublicate(listImage.size());
 		return stat;
