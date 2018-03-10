@@ -36,10 +36,12 @@ public class ImageDaoImpl extends BasicDAO<Image, ObjectId> {
 		//Qui definiamo la creazione della query per una collection diversa da questa istanza "Image"
 		//per farlo usiamo il data source passandogli il riferimento del tipo di classe a cui è associata la collection
 		Query<Utente> queryUtente = datastore.createQuery(Utente.class).disableValidation();
+		//Qui definiamo il criterio da applicare all'oggetto Document a DB di tipo Utente storato a DB come un BSON
 		queryUtente.criteria("id").equal(String.valueOf(user.getId()));
 		
 //		CriteriaContainer containerCriteria = new CriteriaContainerImpl(CriteriaJoin.AND);
 		
+		//Qui definiamo il criterio da applicare all'oggetto Document a DB di tipo Image storato a DB come un BSON
 		queryImage.criteria("utente").in(queryUtente.asKeyList());
 //		Query<Image> query = createQuery().disableValidation().asList();
 				//.filter("utente.id =", String.valueOf(user.getId()));
